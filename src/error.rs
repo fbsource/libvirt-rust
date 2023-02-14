@@ -49,6 +49,7 @@ impl_enum! {
 /// An enumeration of all possible origins of an error.
 ///
 /// See <https://libvirt.org/html/libvirt-virterror.html#virErrorDomain>
+#[non_exhaustive]
 pub enum ErrorDomain {
     None,
     /// Error at Xen hypervisor layer
@@ -192,7 +193,11 @@ pub enum ErrorDomain {
     /// Error from TPM
     Tpm,
     /// Error from BPF code
+    #[cfg(feature = "libvirt-5-10-0")]
     Bpf,
+    /// Error from Cloud-Hypervisor driver
+    #[cfg(feature = "libvirt-7-5-0")]
+    Ch,
     /// Indicates an error domain not yet supported by the Rust bindings
     Last,
 }
@@ -272,7 +277,10 @@ impl_enum! {
         sys::VIR_FROM_FIREWALLD => ErrorDomain::Firewalld,
         sys::VIR_FROM_DOMAIN_CHECKPOINT => ErrorDomain::DomainCheckpoint,
         sys::VIR_FROM_TPM => ErrorDomain::Tpm,
+        #[cfg(feature = "libvirt-5-10-0")]
         sys::VIR_FROM_BPF => ErrorDomain::Bpf,
+        #[cfg(feature = "libvirt-7-5-0")]
+        sys::VIR_FROM_CH => ErrorDomain::Ch,
         _ => ErrorDomain::Last => sys::VIR_FROM_NONE,
     }
 }
@@ -281,6 +289,7 @@ impl_enum! {
 /// An enumeration of all possible errors.
 ///
 /// See <https://libvirt.org/html/libvirt-virterror.html#virErrorNumber>
+#[non_exhaustive]
 pub enum ErrorNumber {
     Ok,
     /// Internal error
@@ -497,6 +506,15 @@ pub enum ErrorNumber {
     NetworkPortExists,
     /// Network port not found
     NoNetworkPort,
+    /// No domain's hostname found
+    #[cfg(feature = "libvirt-6-1-0")]
+    NoHostname,
+    /// Checkpoint can't be used
+    #[cfg(feature = "libvirt-6-10-0")]
+    CheckpointInconsistent,
+    /// More than one matching domain found
+    #[cfg(feature = "libvirt-7-1-0")]
+    MultipleDomains,
     /// Indicates an error number not yet supported by the Rust bindings
     Last,
 }
@@ -613,6 +631,12 @@ impl_enum! {
         sys::VIR_ERR_INVALID_NETWORK_PORT => ErrorNumber::InvalidNetworkPort,
         sys::VIR_ERR_NETWORK_PORT_EXIST => ErrorNumber::NetworkPortExists,
         sys::VIR_ERR_NO_NETWORK_PORT => ErrorNumber::NoNetworkPort,
+        #[cfg(feature = "libvirt-6-1-0")]
+        sys::VIR_ERR_NO_HOSTNAME => ErrorNumber::NoHostname,
+        #[cfg(feature = "libvirt-6-10-0")]
+        sys::VIR_ERR_CHECKPOINT_INCONSISTENT => ErrorNumber::CheckpointInconsistent,
+        #[cfg(feature = "libvirt-7-1-0")]
+        sys::VIR_ERR_MULTIPLE_DOMAINS => ErrorNumber::MultipleDomains,
         _ => ErrorNumber::Last => sys::VIR_ERR_INTERNAL_ERROR,
     }
 }

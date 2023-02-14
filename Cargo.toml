@@ -14,7 +14,14 @@ homepage  = "https://libvirt.org/"
 
 [dependencies]
 libc = "0.2.0"
-virt-sys = { path = "virt-sys", version = "0.1.0" }
+virt-sys = { path = "virt-sys", version = "0.1.0", default-features = false }
 
 [features]
 qemu = ["virt-sys/qemu"]
+default = ["libvirt-5-10-0"]
+# libvirt-X-Y-Z: enable bindings for APIs which appeared in libvirt X.Y.Z
+libvirt-5-10-0 = ["virt-sys/libvirt-5-10-0"]
+libvirt-6-1-0 = ["virt-sys/libvirt-6-1-0", "libvirt-5-10-0"]
+libvirt-6-10-0 = ["virt-sys/libvirt-6-10-0", "libvirt-6-1-0"]
+libvirt-7-1-0 = ["virt-sys/libvirt-7-1-0", "libvirt-6-10-0"]
+libvirt-7-5-0 = ["virt-sys/libvirt-7-5-0", "libvirt-7-1-0"]

@@ -19,3 +19,10 @@ pkg-config = "0.3.25"
 
 [features]
 qemu = []
+default = ["libvirt-5-10-0"]
+# libvirt-X-Y-Z: enable bindings for APIs which appeared in libvirt X.Y.Z
+libvirt-5-10-0 = []
+libvirt-6-1-0 = ["libvirt-5-10-0"]
+libvirt-6-10-0 = ["libvirt-6-1-0"]
+libvirt-7-1-0 = ["libvirt-6-10-0"]
+libvirt-7-5-0 = ["libvirt-7-1-0"]

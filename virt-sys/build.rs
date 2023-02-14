@@ -2,8 +2,6 @@ use std::error::Error;
 use std::path::PathBuf;
 use std::{env, process};
 
-const LIBVIRT_VERSION: &str = "6.0.0";
-
 fn main() {
     match run() {
         Ok(()) => {}
@@ -30,7 +28,19 @@ fn run() -> Result<(), Box<dyn Error>> {
         .ctypes_prefix("::libc");
 
     config
-        .atleast_version(LIBVIRT_VERSION)
+        .atleast_version(if cfg!(feature = "libvirt-7-5-0") {
+            "7.5.0"
+        } else if cfg!(feature = "libvirt-7-1-0") {
+            "7.1.0"
+        } else if cfg!(feature = "libvirt-6-10-0") {
+            "6.10.0"
+        } else if cfg!(feature = "libvirt-6-1-0") {
+            "6.1.0"
+        } else if cfg!(feature = "libvirt-5-10-0") {
+            "5.10.0"
+        } else {
+            "5.7.0"
+        })
         .probe("libvirt")?;
 
     if cfg!(feature = "qemu") {
